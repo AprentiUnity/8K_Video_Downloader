@@ -1,4 +1,5 @@
 import PySimpleGUI as sg
+import webbrowser
 from pytube import YouTube as yt
 from pytube import Playlist as pl
 from pytube import Channel as ch
@@ -24,13 +25,12 @@ contenuc = []
 contenutxtc = ''
 dertitrec = ''
 
-
 def fenetre_ouvert():
     return sg.Window('Téléchargeur de vidéos 8K', icon='.py/PlusTard', size=(800, 640), finalize=False, layout=[
         [sg.TabGroup([[
             sg.Tab('Télécharger une vidéo', layout=[
                 [sg.Column([[sg.Text('Téléchargeur de vidéos 8K', font='_ 20')]], element_justification='center', expand_x=True)],
-                [sg.Column([[sg.Text('                                             par AprentiUnity', font='_ 15')]], element_justification='center', expand_x=True)],
+                [sg.Column([[sg.Text('                                             par ApprentiUnity', font='_ 15')]], element_justification='center', expand_x=True)],
                 [sg.Text()],
                 [sg.Text("Enregistrer dans : "), sg.InputText(key='-TXT2-'), sg.FolderBrowse('  Parcourir  ', initial_folder=os.getcwd())],
                 [sg.Text("Lien de la vidéo :  "), sg.InputText(key='-TXT1-'), sg.Button('Rechercher')],
@@ -45,7 +45,7 @@ def fenetre_ouvert():
             ]),
             sg.Tab('Télécharger une playlist', layout=[
                 [sg.Column([[sg.Text('Téléchargeur de vidéos 8K', font='_ 20')]], element_justification='center', expand_x=True)],
-                [sg.Column([[sg.Text('                                             par AprentiUnity', font='_ 15')]], element_justification='center', expand_x=True)],
+                [sg.Column([[sg.Text('                                             par ApprentiUnity', font='_ 15')]], element_justification='center', expand_x=True)],
                 [sg.Text()],
                 [sg.Text("Enregistrer dans : "), sg.InputText(key='-TXT4-'), sg.FolderBrowse('  Parcourir  ', initial_folder=os.getcwd())],
                 [sg.Text("Lien de la playlist :  "), sg.InputText(key='-TXT3-'), sg.Button('Rechercher')],
@@ -56,7 +56,7 @@ def fenetre_ouvert():
             ]),
             sg.Tab('Télécharger une chaîne', layout=[
                 [sg.Column([[sg.Text('Téléchargeur de vidéos 8K', font='_ 20')]], element_justification='center', expand_x=True)],
-                [sg.Column([[sg.Text('                                             par AprentiUnity', font='_ 15')]], element_justification='center', expand_x=True)],
+                [sg.Column([[sg.Text('                                             par ApprentiUnity', font='_ 15')]], element_justification='center', expand_x=True)],
                 [sg.Text()],
                 [sg.Text("Enregistrer dans : "), sg.InputText(key='-TXT6-'), sg.FolderBrowse('  Parcourir  ', initial_folder=os.getcwd())],
                 [sg.Text("Lien de la chaîne :  "), sg.InputText(key='-TXT5-'), sg.Button('Rechercher')],
@@ -65,11 +65,31 @@ def fenetre_ouvert():
                 [sg.Text('Nombre de vues de sa dernière video :          ' + str(vuesc), key='-TXTMAJ13-')],
                 [sg.Text('Cette chaîne contient : \n' + contenutxtc, size=(110, 21), key='-TXTMAJ14-')],
                 [sg.Column([[sg.Button('Télécharger')]], justification='center')]
+            ]),
+            sg.Tab('A propos', layout=[
+                [sg.Column([[sg.Text('Téléchargeur de vidéos 8K', font='_ 20')]], element_justification='center', expand_x=True)],
+                [sg.Column([[sg.Text('                                             par ApprentiUnity', font='_ 15')]], element_justification='center', expand_x=True)],
+                [sg.Text()],
+                [sg.Text("Version 2.1 [Beta 04.2023]")],
+                [sg.Text("Changelog", text_color="#0000EE", enable_events=True, key="-LINKCHANGELOG-")],
+                [sg.Text("Signaler un problème", text_color="#0000EE", enable_events=True, key="-LINKISSUE-")],
+                [sg.Text("Repo Github", text_color="#0000EE", enable_events=True, key="-LINKGITHUB-")],
             ])
         ]])]
     ])
 
 fenetre = fenetre_ouvert()
+
+event, values = fenetre.read()
+fenetre["-LINKCHANGELOG-"].set_cursor("hand2")
+fenetre["-LINKCHANGELOG-"].Widget.bind("<Enter>", lambda _: fenetre["-LINKCHANGELOG-"].update(font=(None, 10, "underline")))
+fenetre["-LINKCHANGELOG-"].Widget.bind("<Leave>", lambda _: fenetre["-LINKCHANGELOG-"].update(font=(None, 10)))
+fenetre["-LINKISSUE-"].set_cursor("hand2")
+fenetre["-LINKISSUE-"].Widget.bind("<Enter>", lambda _: fenetre["-LINKISSUE-"].update(font=(None, 10, "underline")))
+fenetre["-LINKISSUE-"].Widget.bind("<Leave>", lambda _: fenetre["-LINKISSUE-"].update(font=(None, 10)))
+fenetre["-LINKGITHUB-"].set_cursor("hand2")
+fenetre["-LINKGITHUB-"].Widget.bind("<Enter>", lambda _: fenetre["-LINKGITHUB-"].update(font=(None, 10, "underline")))
+fenetre["-LINKGITHUB-"].Widget.bind("<Leave>", lambda _: fenetre["-LINKGITHUB-"].update(font=(None, 10)))
 
 while True:
     event, values = fenetre.read()
@@ -133,6 +153,15 @@ while True:
         for videoc in lienc.videos:
             videocmr = videoc.streams.get_highest_resolution()
             videocmr.download(values["-TXT6-"])
+
+    if event == "-LINKCHANGELOG-":
+        webbrowser.open("https://github.com/AprentiUnity/8K_Video_Downloader/releases/tag/v2.1-beta")
+
+    if event == "-LINKISSUE-":
+        webbrowser.open("https://github.com/AprentiUnity/8K_Video_Downloader/issues/new")
+    
+    if event == "-LINKGITHUB-":
+        webbrowser.open("https://github.com/AprentiUnity/8K_Video_Downloader")
 
     if event == sg.WIN_CLOSED:
         break
