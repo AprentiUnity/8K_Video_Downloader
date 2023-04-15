@@ -35,12 +35,12 @@ def fenetre_ouvert():
                 [sg.Text("Enregistrer dans : "), sg.InputText(key='-TXT2-'), sg.FolderBrowse('  Parcourir  ', initial_folder=os.getcwd())],
                 [sg.Text("Lien de la vidéo :  "), sg.InputText(key='-TXT1-'), sg.Button('Rechercher')],
                 [sg.Text('Titre :                        ' + titre, key='-TXTMAJ1-')],
-                [sg.Text('Auteur :                        ' + auteur, key='-TXTMAJ2-')],
+                [sg.Text('Auteur :                     '), sg.Text(auteur, text_color="#0000EE", enable_events=True, key='-TXTMAJ2-')],
                 [sg.Text('Publié le :                     ' + str(publication), key='-TXTMAJ3-')],
                 [sg.Text('Nombre de vues :          ' + str(vues), key='-TXTMAJ4-')],
                 [sg.Text('Mots Clef :                   ' + motscleftxt, key='-TXTMAJ5-')],
                 [sg.Text('Longeur (en secondes) : ' + str(temps), key='-TXTMAJ6-')],
-                [sg.Text('Description : \n' + description, size=(110, 16), key='-TXTMAJ7-')],
+                [sg.Column([[sg.Text('Description : \n' + description, size=(110, 256), key='-TXTMAJ7-')]], scrollable=True, vertical_scroll_only=True, size=(740, 196))],
                 [sg.Column([[sg.Button('Télécharger')]], justification='center')]
             ]),
             sg.Tab('Télécharger une playlist', layout=[
@@ -51,7 +51,7 @@ def fenetre_ouvert():
                 [sg.Text("Lien de la playlist :  "), sg.InputText(key='-TXT3-'), sg.Button('Rechercher')],
                 [sg.Text('Titre :                        ' + titrepl, key='-TXTMAJ8-')],
                 [sg.Text('Nombre de vues :          ' + str(vuespl), key='-TXTMAJ9-')],
-                [sg.Text('Cette playlist contient : \n' + contenutxt, size=(110, 23), key='-TXTMAJ10-')],
+                [sg.Column([[sg.Text('Cette playlist contient : \n' + contenutxt, size=(110, 256), key='-TXTMAJ10-')]], scrollable=True, vertical_scroll_only=True, size=(740, 308))],
                 [sg.Column([[sg.Button('Télécharger')]], justification='center')]
             ]),
             sg.Tab('Télécharger une chaîne', layout=[
@@ -99,7 +99,10 @@ while True:
         titre = lien.title
         fenetre['-TXTMAJ1-'].update('Titre :                           ' + titre)
         auteur = lien.author
-        fenetre['-TXTMAJ2-'].update('Auteur :                        ' + auteur)
+        fenetre['-TXTMAJ2-'].update(auteur)
+        fenetre["-TXTMAJ2-"].set_cursor("hand2")
+        fenetre["-TXTMAJ2-"].Widget.bind("<Enter>", lambda _: fenetre["-TXTMAJ2-"].update(font=(None, 10, "underline")))
+        fenetre["-TXTMAJ2-"].Widget.bind("<Leave>", lambda _: fenetre["-TXTMAJ2-"].update(font=(None, 10)))
         publication = lien.publish_date
         fenetre['-TXTMAJ3-'].update('Publié le :                     ' + str(publication))
         vues = lien.views
@@ -135,8 +138,9 @@ while True:
             videoplmr = videopl.streams.get_highest_resolution()
             videoplmr.download(values["-TXT4-"])
 
-    if event == "Rechercher4":
+    if event == "Rechercher4": #Cassé
         lienc = ch(values['-TXT5-'])
+        print(lienc.videos)
         titrec = lienc.videos[0].author
         fenetre['-TXTMAJ11-'].update('Nom de la chaine :                           ' + titrec)
         dertitrec = lienc.videos[0].title
@@ -153,6 +157,9 @@ while True:
         for videoc in lienc.videos:
             videocmr = videoc.streams.get_highest_resolution()
             videocmr.download(values["-TXT6-"])
+
+    if event == "-TXTMAJ2-":
+        webbrowser.open(lien.channel_url)
 
     if event == "-LINKCHANGELOG-":
         webbrowser.open("https://github.com/AprentiUnity/8K_Video_Downloader/releases/tag/v2.1-beta")
